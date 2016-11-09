@@ -1,11 +1,13 @@
 #include <iostream>
 #include "AVLTree.h"
 #include "InputReader.h"
+#include "Graph.h"
 #include <string.h>
 #include <math.h>
 
 #define FILE2 "e1.txt"
 #define FILE3 "e3.txt"
+#define FILE11 "e11.txt"
 using namespace std;
 
 // E2
@@ -67,6 +69,7 @@ void LNRcount(Node*& subroot, int& even, int& odd, int& ing) {
 		}
 	}
 }
+
 // E3
 void EvenOddIng() {
 	// doc file
@@ -83,8 +86,90 @@ void EvenOddIng() {
 	}
 }
 
+// ham MakeGraph tao graph tu 2 mang luu thong tin ve dinh va canh
+void MakeGraph(Graph& graph) {
+	// doc file E11
+	int *vertexDataArr;
+	int vertexCount;
+	int **edgeDataArr;
+	int edgeCount;
+	if (ReadArrayInputOfGraph(FILE11, vertexDataArr, vertexCount, edgeDataArr, edgeCount)) {
+		// insert dinh
+		for (int i = 0; i < vertexCount; i++) 
+			graph.InsertVertex(vertexDataArr[i]);
+		// insert canh
+		for (int i = 0; i < edgeCount; i++) 
+			graph.InsertEdge(edgeDataArr[i][0], edgeDataArr[i][1]);
+	}
+}
+
+int** GraphToMatrix(Graph graph) {
+	// tao ma tran
+	int n = graph.size;
+	// mang 2 chieu matrix de luu ma tran
+	int** matrix = new int*[n];
+	for (int i = 0; i < n; i++) {
+		matrix[i] = new int[n];
+		for (int j = 0; j < n; j++)
+			matrix[i][j] = 0;
+	}
+	// mang 1 chieu data de luu chi so cua cac vertex
+	int* data = new int[n];
+	// vong lap luu data vao mang 1 chieu
+	Vertex* pTemp = graph.gHead;
+	int i = 0;
+	while (pTemp) {
+		data[i] = pTemp->data;
+		i++;
+		pTemp = pTemp->nextVertex;
+	}
+	// vong lap lap ma tran lien ke
+	pTemp = graph.gHead;
+	Edge* pTemp1 = NULL;
+	i = 0;
+	// di het cac dinh
+	while (pTemp) {
+		pTemp1 = pTemp->firstEdge;
+		// di het cac canh bat dau tu dinh nay
+		while (pTemp1) {
+			for (int j = 0; j < n; j++) {
+				if (pTemp1->destination->data == data[j])
+					matrix[i][j] = 1;
+			}
+			pTemp1 = pTemp1->nextEdge;
+		}
+		i++;
+		pTemp = pTemp->nextVertex;
+	}
+	return matrix;
+}
+
+// E11
+void E11GraphToMatrix() {
+	Graph graph = Graph();
+	// tao dinh va canh cho graph
+	MakeGraph(graph);
+	// in graph
+	//graph.Print();
+	// chuyen graph sang dang ma tran lien ke
+	int** matrix = GraphToMatrix(graph);
+	// in ma tran
+	int n = graph.size;
+	cout << "ma tran lien ke cua graph : " << endl;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++)
+			cout << matrix[i][j] << "   ";
+		cout << endl;
+	}
+}
+
+
+
+// E14
+
+
 int main() {
-	EvenOddIng();
+	E11GraphToMatrix();
 	system("pause");
 	return 0;
 }
