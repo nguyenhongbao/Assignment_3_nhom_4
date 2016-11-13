@@ -2,13 +2,20 @@
 #include "AVLTree.h"
 #include "InputReader.h"
 #include "Graph.h"
+#include "Stack.h"
 #include <string.h>
 #include <math.h>
 
 #define FILE2 "e1.txt"
 #define FILE3 "e3.txt"
 #define FILE11 "e11.txt"
+#define FILE16 "e16.txt"
 using namespace std;
+
+struct BoolLinked {
+	bool data;
+	BoolLinked* next;
+};
 
 // E2
 void DeleteAVL() {
@@ -87,13 +94,13 @@ void EvenOddIng() {
 }
 
 // ham MakeGraph tao graph tu 2 mang luu thong tin ve dinh va canh
-void MakeGraph(Graph& graph) {
+void MakeGraph(Graph& graph, string file) {
 	// doc file E11
 	int *vertexDataArr;
 	int vertexCount;
 	int **edgeDataArr;
 	int edgeCount;
-	if (ReadArrayInputOfGraph(FILE11, vertexDataArr, vertexCount, edgeDataArr, edgeCount)) {
+	if (ReadArrayInputOfGraph(file, vertexDataArr, vertexCount, edgeDataArr, edgeCount)) {
 		// insert dinh
 		for (int i = 0; i < vertexCount; i++) 
 			graph.InsertVertex(vertexDataArr[i]);
@@ -148,7 +155,7 @@ int** GraphToMatrix(Graph graph) {
 void E11GraphToMatrix() {
 	Graph graph = Graph();
 	// tao dinh va canh cho graph
-	MakeGraph(graph);
+	MakeGraph(graph, FILE11);
 	// in graph
 	//graph.Print();
 	// chuyen graph sang dang ma tran lien ke
@@ -163,13 +170,86 @@ void E11GraphToMatrix() {
 	}
 }
 
-
+// ham nay thuoc DFS, tim den het 1 chu trinh roi in ra
+void RecursionE14(Vertex*& vertexroot, Stack& stack, int& countT, Vertex* vertexnow) {
+	if (vertexnow->processed) {
+		// neu quay tro lai goc dau tien thi ghi nhan 1 chu trinh
+		if (vertexnow == vertexroot)
+			stack.PrintStack(countT);
+		// neu khong thi de quay tro lai buoc truoc
+	}
+	// neu di qua 1 dinh moi
+	else {
+		// danh dau da di qua
+		vertexnow->processed = true;
+		stack.Push(vertexnow->data);
+		// tao vong lap cho Recursion
+		Edge* pTemp = vertexnow->firstEdge;
+		while (pTemp) {
+			// buoc de qui phia sau khong can bao gi ve cho buoc de qui phia truoc
+			RecursionE14(vertexroot, stack, countT, pTemp->destination);
+			pTemp = pTemp->nextEdge;
+		}
+		// sua lai la chua di qua de tim them chu trinh moi
+		vertexnow->processed = false;
+		stack.Pop();
+	}
+}
 
 // E14
+void E14CircleGraph() {
+	Graph graph = Graph();
+	Stack stack = Stack();
+	int countT = 0;
+	// tao dinh va canh cho graph
+	MakeGraph(graph, FILE11);
+	// in graph
+	//graph.Print();
+	cout << "Cac chu trinh cua graph : " << endl;
+	Vertex* pTemp = graph.gHead;
+	while (pTemp) {
+		RecursionE14(pTemp, stack, countT, pTemp);
+		pTemp = pTemp->nextVertex;
+	}
+	cout << "Tong so chu trinh la " << countT << endl;
+}
 
+void RecursionE16(Vertex*& vertexroot, Vertex*& vertexnow, bool*& isconnected, int n) {
+	Edge* pTemp = vertexnow->firstEdge;
+	while (pTemp) {
+		if (pTemp->destination->processed) {
+			RecursionE16(vertexroot, pTemp->destination, isconnected, n + 1);
+			if (isconnected[n + 1])
+				isconnected[n] = true;
+		}
+		else
+			if (pTemp->destination == vertexroot)
+				isconnected[n] = true;
+	}
+}
+
+// E16
+// dua vao giai thuat Tajan de xet coi mot Graph co lien thong manh hay khong
+void E16StronglyConnected() {
+	Graph graph = Graph();
+	MakeGraph(graph, FILE16);
+	// ap dung thuat toan Tajan, bat dau tu 1 dinh, danh dau cac dinh lien thong manh vs dinh dau tien
+	bool* isConnected = new bool[graph.size];
+	isConnected[0] = true;
+	for (int i = 1; i < graph.size; i++)
+		isConnected[i] = false;
+	RecursionE16(graph.gHead, graph.gHead, isConnected, 0);
+	bool result = true;
+	for (int i = 0; i < graph.size; i++)
+		result = result & isConnected[i];
+	if (result)
+		cout << "Do thi nay la do thi lien thong manh" << endl;
+	else
+		cout << "Do thi nay khong phai la do thi lien thong manh" << endl;
+}
 
 int main() {
-	E11GraphToMatrix();
+	E14CircleGraph();
 	system("pause");
 	return 0;
 }
