@@ -10,6 +10,8 @@
 #define FILE3 "e3.txt"
 #define FILE11 "e11.txt"
 #define FILE16 "e16.txt"
+#define FILE20a "e20a.txt"
+#define FILE20b "e20b.txt"
 using namespace std;
 
 struct BoolLinked {
@@ -214,17 +216,19 @@ void E14CircleGraph() {
 	cout << "Tong so chu trinh la " << countT << endl;
 }
 
-void RecursionE16(Vertex*& vertexroot, Vertex*& vertexnow, bool*& isconnected, int n) {
+void RecursionE16(Vertex*& vertexroot, Vertex*& vertexnow) {
 	Edge* pTemp = vertexnow->firstEdge;
+	vertexnow->processed = true;
 	while (pTemp) {
-		if (pTemp->destination->processed) {
-			RecursionE16(vertexroot, pTemp->destination, isconnected, n + 1);
-			if (isconnected[n + 1])
-				isconnected[n] = true;
+		if (!pTemp->destination->processed) {
+			RecursionE16(vertexroot, pTemp->destination);
+			if (pTemp->destination->inDegree)
+				vertexnow->inDegree = 1;
 		}
 		else
-			if (pTemp->destination == vertexroot)
-				isconnected[n] = true;
+			if (pTemp->destination->inDegree)
+				vertexnow->inDegree = 1;
+		pTemp = pTemp->nextEdge;
 	}
 }
 
@@ -233,23 +237,90 @@ void RecursionE16(Vertex*& vertexroot, Vertex*& vertexnow, bool*& isconnected, i
 void E16StronglyConnected() {
 	Graph graph = Graph();
 	MakeGraph(graph, FILE16);
+	// dung inDegree cua Vertex de luu thong tin ve lien thong
+	// sao luu lai inDegree nay trong mang inDegreeTemp
+	int* inDegreeTemp = new int[graph.size];
+	Vertex* pTemp = graph.gHead;
+	int i = 0;
+	while (pTemp) {
+		inDegreeTemp[i] = pTemp->inDegree;
+		i++;
+		pTemp = pTemp->nextVertex;
+	}
 	// ap dung thuat toan Tajan, bat dau tu 1 dinh, danh dau cac dinh lien thong manh vs dinh dau tien
-	bool* isConnected = new bool[graph.size];
-	isConnected[0] = true;
-	for (int i = 1; i < graph.size; i++)
-		isConnected[i] = false;
-	RecursionE16(graph.gHead, graph.gHead, isConnected, 0);
+	RecursionE16(graph.gHead, graph.gHead);
 	bool result = true;
-	for (int i = 0; i < graph.size; i++)
-		result = result & isConnected[i];
+	pTemp = graph.gHead;
+	i = 0;
+	while (pTemp) {
+		result = result & (bool)pTemp->inDegree;
+		pTemp->inDegree = inDegreeTemp[i];
+		i++;
+		pTemp = pTemp->nextVertex;
+	}
 	if (result)
 		cout << "Do thi nay la do thi lien thong manh" << endl;
 	else
 		cout << "Do thi nay khong phai la do thi lien thong manh" << endl;
 }
 
+// E20
+// y tuong la dua ve dang ma tran roi so sanh 2 ma tran voi nhau
+void E20Isomorphous() {
+	// tao graph va chuyen sang dang ma tran
+	Graph grapha = Graph();
+	MakeGraph(grapha, FILE20a);
+	int** Matrixa = GraphToMatrix(grapha);
+	Graph graphb = Graph();
+	MakeGraph(graphb, FILE20b);
+	
+	// so sanh lan luot cac hang ma tran a so voi ma tran b
+	if (grapha.size == graphb.size) {
+		// mang nay de luu thong tin ve nhung hang da xet roi trong Matrixb
+		int n = grapha.size;
+		int i = 0;
+		int k = 0;
+		int j = 0;
+		bool* Given = new bool[n];
+		for (i = 0; i < n; i++) {
+			Given[i] = false;
+		}
+		// vong lap Matrix a
+		for (i = 0; i < n; i++) {
+			if (i == 2)
+				i = 2;
+			// vong lap Matrix b
+			for (j = 0; j < n; j++) {
+				// neu hang nay chua bang bat ki mot hang nao cua ma tran a
+				if (!Given[j]) {
+					for (k = 0; k < n; k++) {
+						if (Matrixa[i][k] != Matrixb[j][k])
+							break;
+					}
+				}
+				// neu canh nay trung voi canh dang xet cua a
+				if (k == n) {
+					k = 0;
+					// thi chap nhan canh nay
+					Given[j] = true;
+					break;
+				}
+				// nguoc lai thi den canh tiep theo
+			}
+			// neu khong co hang nao giong hang nay
+			if (j == n) {
+				// thi ket thuc thuat toan, ket luan khong dang cau
+				break;
+			}
+		}
+		if (i == n)
+			cout << "2 do thi nay dang cau voi nhau." << endl;
+		else
+			cout << "2 do thi nay khong dang cau." << endl;
+	}
+}
 int main() {
-	E14CircleGraph();
+	E20Isomorphous();
 	system("pause");
 	return 0;
 }
