@@ -273,7 +273,8 @@ void E20Isomorphous() {
 	int** Matrixa = GraphToMatrix(grapha);
 	Graph graphb = Graph();
 	MakeGraph(graphb, FILE20b);
-	
+	int** Matrixb = GraphToMatrix(graphb);
+		
 	// so sanh lan luot cac hang ma tran a so voi ma tran b
 	if (grapha.size == graphb.size) {
 		// mang nay de luu thong tin ve nhung hang da xet roi trong Matrixb
