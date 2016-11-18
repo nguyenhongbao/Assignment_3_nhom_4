@@ -25,24 +25,25 @@ void BFS2Stack(Node*pRoot, LStack<Node*>*&BFS){
 void E7_problem(){
 	int *arr;
 	int count;
-	ReadArrayInput("input/E7.txt", arr, count);
-	AVLTree myAVL;
-	myAVL = myAVL.ArrayToAVL(arr, count);
-	myAVL.PrintAVL();
-	LStack<Node*> *sTemp = new LStack<Node*>();
-	BFS2Stack(myAVL.root, sTemp);
-	int h = 0, sum = 0;
-	sTemp = sTemp->reverse();
-	while (!sTemp->isEmpty()){
-		for (int i = 0; i < pow(2, h); i++){
-			Node* pNode = NULL;
-			if (sTemp->popStack(pNode)){
-				sum += pNode->data;
-			}
+	if(ReadArrayInput("input/E7.txt", arr, count)){
+		AVLTree myAVL;
+		myAVL = myAVL.ArrayToAVL(arr, count);
+		myAVL.PrintAVL();
+		LStack<Node*> *sTemp = new LStack<Node*>();
+		BFS2Stack(myAVL.root, sTemp);
+		int h = 0, sum = 0;
+		sTemp = sTemp->reverse();
+		while (!sTemp->isEmpty()){
+			for (int i = 0; i < pow(2, h); i++){
+				Node* pNode = NULL;
+				if (sTemp->popStack(pNode)){
+					sum += pNode->data;
+				}
 
+			}
+			cout << sum << endl;
+			sum = 0;
+			h++;
 		}
-		cout << sum << endl;
-		sum = 0;
-		h++;
 	}
 }
