@@ -1,6 +1,6 @@
 #include "Graph.h"
 #include "InputReader.h"
-
+using namespace std;
 void Graph::Print(){
 	
 	Vertex* pTemp = gHead;
