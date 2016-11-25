@@ -52,16 +52,18 @@ Graph AVL2Graph(AVLTree tree ){
 	//traverse các node của cây và thêm vào graph
 	while (!sTemp.isEmpty()){
 		sTemp.popStack(pTemp);
-		if (!graph.VertexExist(pTemp->data)) graph.InsertVertex(pTemp->data); // thêm node vào graph nếu node chưa tồn tại
-		if (pTemp->left) { 
-			if (!graph.VertexExist(pTemp->left->data)) graph.InsertVertex(pTemp->left->data); // thêm node con vào graph nếu node chưa tồn tại
-			graph.InsertEdge(pTemp->data, pTemp->left->data); // chèn cạnh từ node cha tới node con bên trái
-			sTemp.pushStack(pTemp->left); // thêm node con vào stack
-		}
-		if (pTemp->right){ 
-			if (!graph.VertexExist(pTemp->right->data)) graph.InsertVertex(pTemp->right->data); // thêm node con vào graph nếu node chưa tồn tại
-			graph.InsertEdge(pTemp->data, pTemp->right->data);  // chèn cạnh từ node cha tới node con bên phải
-			sTemp.pushStack(pTemp->right); // thêm node con vào stack
+		if (pTemp){
+			if (!graph.VertexExist(pTemp->data)) graph.InsertVertex(pTemp->data); // thêm node vào graph nếu node chưa tồn tại
+			if (pTemp->left) {
+				if (!graph.VertexExist(pTemp->left->data)) graph.InsertVertex(pTemp->left->data); // thêm node con vào graph nếu node chưa tồn tại
+				graph.InsertEdge(pTemp->data, pTemp->left->data); // chèn cạnh từ node cha tới node con bên trái
+				sTemp.pushStack(pTemp->left); // thêm node con vào stack
+			}
+			if (pTemp->right){
+				if (!graph.VertexExist(pTemp->right->data)) graph.InsertVertex(pTemp->right->data); // thêm node con vào graph nếu node chưa tồn tại
+				graph.InsertEdge(pTemp->data, pTemp->right->data);  // chèn cạnh từ node cha tới node con bên phải
+				sTemp.pushStack(pTemp->right); // thêm node con vào stack
+			}
 		}
 	}
 	return graph;
