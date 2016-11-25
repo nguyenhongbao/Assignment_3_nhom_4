@@ -49,6 +49,7 @@ void E5_problem(){
 		// insert canh
 		for (int i = 0; i < edgeCount; i++)
 			myGraph.InsertEdge(edgeDataArr[i][0], edgeDataArr[i][1]);
+		myGraph.Print();
 	}
-	myGraph.Print();
+	
 }
