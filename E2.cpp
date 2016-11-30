@@ -3,13 +3,16 @@
 #include "InputReader.h"
 #include "Graph.h"
 #include "Stack.h"
+#include "Queue.h"
 #include <string.h>
 #include <math.h>
 
 #define FILE2 "e1.txt"
 #define FILE3 "e3.txt"
 #define FILE11 "e11.txt"
+#define FILE15 "e15.txt"
 #define FILE16 "e16.txt"
+#define FILE17 "e17.txt"
 #define FILE20a "e20a.txt"
 #define FILE20b "e20b.txt"
 using namespace std;
@@ -153,6 +156,14 @@ int** GraphToMatrix(Graph graph) {
 	return matrix;
 }
 
+void PrintMatrix(int** matrix, int n) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++)
+			cout << matrix[i][j] << "   ";
+		cout << endl;
+	}
+}
+
 // E11
 void E11GraphToMatrix() {
 	Graph graph = Graph();
@@ -165,11 +176,7 @@ void E11GraphToMatrix() {
 	// in ma tran
 	int n = graph.size;
 	cout << "ma tran lien ke cua graph : " << endl;
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++)
-			cout << matrix[i][j] << "   ";
-		cout << endl;
-	}
+	PrintMatrix(matrix, n);
 }
 
 // ham nay thuoc DFS, tim den het 1 chu trinh roi in ra
@@ -264,6 +271,29 @@ void E16StronglyConnected() {
 		cout << "Do thi nay khong phai la do thi lien thong manh" << endl;
 }
 
+void Head() {
+	cout << "                                    =====Dai hoc Bach Khoa thanh pho Ho Chi Minh=====" << endl
+		<< "                                           Khoa Khoa Hoc va Ky Thuat May Tinh" << endl
+		<< "                                                Nganh Khoa Hoc May Tinh" << endl << endl << endl << endl
+		<< "                                                 BAO CAO BAI TAP LON" << endl
+		<< "                                         mon cau truc du lieu va giai thuat" << endl
+		<< "                                                giang vien huong dan: " << endl
+		<< "                                                  Lop L01, Nhom 4: " << endl
+		<< "                                             1510175_Nguyen Hong Bao (Nhom truong)" << endl
+		<< "                                             1510580_Trinh Minh Dung" << endl
+		<< "                                             1510612_Nguyen Truong Duy" << endl;
+}
+
+bool getStop() {
+	char y = ' ';
+	cout << "De tiep tuc, xin moi thay bam Y (hoac y) : ";
+	cin >> y;
+	bool stop = true;
+	if ((y == 'Y') || (y == 'y'))
+		stop = false;
+	return stop;
+}
+
 // E20
 // y tuong la dua ve dang ma tran roi so sanh 2 ma tran voi nhau
 void E20Isomorphous() {
@@ -320,8 +350,352 @@ void E20Isomorphous() {
 			cout << "2 do thi nay khong dang cau." << endl;
 	}
 }
+
+Graph& MatrixtoGraph(int** matrix, int n) {
+	Graph graph;
+	// tao dinh
+	for (int i = 0; i < n; i++) {
+		graph.InsertVertex(i + 1);
+	}
+	// tao canh
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (matrix[i][j])
+				graph.InsertEdgeFromVertices(graph.GetVertex(i + 1), graph.GetVertex(j + 1));
+		}
+	}
+	return graph;
+}
+
+// E15
+void Exercise15() {
+	int** matrix;
+	int count = 0;
+	if (ReadAdjacencyMat(FILE15, matrix, count)) {
+		cout << "Ma tran : " << endl;
+		PrintMatrix(matrix, count);
+		Graph graph;
+		graph = MatrixtoGraph(matrix, count);
+		//graph.Print();
+	}
+}
+
+/* mot so luu y:
++ ta da biet dinh co the la root
++ ta biet rang khong co dinh nao trung key voi nhau
+Vay,cong viec can lam la:
++ kiem tra so dinh con cua moi dinh
++ kiem tra balance cua moi dinh
++ kiem tra thu tu
+*/
+////void testAVL(Vertex* vnow, bool& result) {
+////	if (result) {
+////		if (!vnow->processed) {
+////			Edge* pTemp = vnow->firstEdge;
+////			int count = 0;
+////			while (pTemp) {
+////				count++;
+////				testAVL(pTemp->destination, result);
+////				if (count == 2) {
+////					// neu ma co mot dinh con thu 3
+////					if (pTemp->nextEdge) {
+////						result = false;
+////						return;
+////					}
+////					// neu cay co 2 dinh con thi khong can lam gi ca
+////				}
+////				// neu cay chi co 1 dinh con
+////				else {
+////
+////				}
+////				pTemp = pTemp->nextEdge;
+////			}
+////		}
+////		else
+////			result = false;
+////	}
+////}
+
+// ham nay tao hinh cay theo dung nhung gi ma tran mieu ta, dong thoi check coi no co phai la cay AVL hay khong
+bool InsertAVLtest(Node*& root, int newdata, int father, bool& taller) {
+	bool result = true;
+	if (root == NULL) {
+		root = new Node(newdata);
+		taller = true;
+		return true;
+	}
+	else if (father < root->data) {
+		result = InsertAVLtest(root->left, newdata, father, taller);
+		if (result) {
+			//AVLinsert(newNode, taller);
+			if (taller) {
+				if (root->balance == LEFT) {
+					return false;
+				}
+				else if (root->balance == EQUAL) {
+					root->balance = LEFT;
+				}
+				else {
+					root->balance = EQUAL;
+					taller = false;
+				}
+			}
+			return true;
+		}
+		else
+			return false;
+	}
+	else if (father > root->data) {
+		result = InsertAVLtest(root->right, newdata, father, taller);
+		if (result) {
+			if (taller) {
+				if (root->balance == LEFT) {
+					root->balance = EQUAL;
+					taller = false;
+				}
+				else if (root->balance == EQUAL) {
+					root->balance = RIGHT;
+				}
+				else {
+					return false;
+				}
+			}
+			return true;
+		}
+		else
+			return false;
+	}
+	// luc root la con tro chi den father
+	else {
+		// neu gan newdata ve ben phai
+		if (newdata > father)
+			if (root->right)
+				return false;
+			else {
+				root->right = new Node(newdata);
+				if (root->left)
+					taller = false;
+				else
+					taller = true;
+				return true;
+			}
+		else if (root->left)
+				return false;
+			else {
+				root->left = new Node(newdata);
+				if (root->right)
+					taller = false;
+				else
+					taller = true;
+				return true;
+			}
+	}
+}
+
+void testAVL(int** matrix, int& n, Node*& root, int father, bool* processed, bool& result, Queue& queue) {
+	if (result) {
+		if (!processed[father - 1]) {
+			processed[father - 1] = true;
+			int count = 0;
+			int dataleft = 0, dataright = 0;
+			for (int i = 0; i < n; i++) {
+				if (matrix[father - 1][i]) {
+					count++;
+					// neu co 3 con
+					if (count == 3) {
+						result = false;
+						return;
+					}
+					else {
+						bool taller = true;
+						// neu khong phai cay AVL
+						if (!InsertAVLtest(root, i + 1, father, taller)) {
+							result = false;
+							return;
+						}
+						else
+							queue.push(i + 1);
+					}
+				}
+			}
+			if (queue.front != 0)
+				testAVL(matrix, n, root, queue.pop(), processed, result, queue);
+		}
+		else {
+			father = father;
+			result = false;
+		}
+ 	}
+}
+
+void LNRtoQueue(Node* AVLroot, Queue& queue) {
+	if (AVLroot) {
+		LNRtoQueue(AVLroot->left, queue);
+		queue.push(AVLroot->data);
+		LNRtoQueue(AVLroot->right, queue);
+	}
+}
+
+// ham kiem tra ma tran la cay AVL
+bool isMatrixaAVL(int** matrix, int n) {
+	bool result = false;
+	// B1 : tim dinh nao khong co dinh cha thi no co the la root cua cay AVL
+	// nghia la tim cot nao toan la so khong
+	int count = -1;
+	bool allzero = true;
+	int i = 0;
+	for (i = 0; i < n; i++) {
+		allzero = true;
+		for (int j = 0; j < n; j++) {
+			if (matrix[j][i]) {
+				allzero = false;
+				break;
+			}
+		}
+		if (allzero)
+			break;
+	}
+	if (allzero) {
+		int zero = i + 1;
+		Node* AVLroot = new Node(zero);
+		bool* processed = new bool[n];
+		for (int i = 0; i < n; i++) {
+			processed[i] = false;
+		}
+		result = true;
+		Queue queue;
+		testAVL(matrix, n, AVLroot, zero, processed, result, queue);
+		// tuy nhien, phep thu tren van chua xac dinh duoc co phai cay theo dung thu tu cua cay AVL hay khong 
+		// va cay co chua day du dinh cua Graph hay khong
+		// de lam duoc dieu do can duyet LNR cay AVL vua tao
+		if (result) {
+			Queue queue2;
+			LNRtoQueue(AVLroot, queue2);
+			int i = 0;
+			while (queue2.size) {
+				i++;
+				if (queue2.pop() != i) {
+					result = false;
+					break;
+				}
+			}
+			// kiem tra cay co chua tat ca cac dinh khong
+			if (i != n)
+				result = false;
+		}
+	}
+	return result;
+}
+
+
+// E17
+// kiem tra ma tran la cay AVL
+void Exercise17() {
+	int** matrix;
+	int count = 0;
+	if (ReadAdjacencyMat(FILE17, matrix, count)) {
+		cout << "Ma tran : " << endl;
+		PrintMatrix(matrix, count);
+		if (isMatrixaAVL(matrix, count))
+			cout << "Ma tran nay bieu dien cho mot cay AVL" << endl;
+		else
+			cout << "Ma tran nay KHONG THE bieu dien cho mot cay AVL" << endl;
+	}
+}
+
 int main() {
-	E20Isomorphous();
+	//////////Head();
+	//////////bool stop = false;
+	//////////stop = getStop();
+	//////////if (!stop) {
+	//////////	while (!stop) {
+	//////////		system("clr");
+	//////////		int n = 0;
+	//////////		bool redo = true;
+	//////////		while (redo) {
+	//////////			cout << "Moi thay nhap ma so cua bai tap nho (20 bai tap): ";
+	//////////			cin >> n;
+	//////////			redo = false;
+	//////////			switch (n) {
+	//////////			case 1:
+	//////////				// thao tac co ban voi AVL tree (Insert)
+	//////////				Exercise1();
+	//////////				break;
+	//////////			case 2:
+	//////////				// thao tac co ban voi AVL tree (Delete)
+	//////////				Exercise2();
+	//////////				break;
+	//////////			case 3:
+	//////////				// dem so nut chan le, nguyen to co trong cay AVL
+	//////////				Exercise3();
+	//////////				break;
+	//////////			case 4:
+	//////////				// thao tac co ban voi Heap (Insert)
+	//////////				Exercise4();
+	//////////				break;
+	//////////			case 5:
+	//////////				// thao tac co ban voi Graph (in Graph)
+	//////////				Exercise5();
+	//////////				break;
+	//////////			case 6:
+	//////////				
+	//////////				Exercise6();
+	//////////				break;
+	//////////			case 7:
+	//////////				Exercise7();
+	//////////				break;
+	//////////			case 8:
+	//////////				Exercise8();
+	//////////				break;
+	//////////			case 9:
+	//////////				Exercise9();
+	//////////				break;
+	//////////			case 10:
+	//////////				Exercise10();
+	//////////				break;
+	//////////			case 11:
+	//////////				Exercise11();
+	//////////				break;
+	//////////			case 12:
+	//////////				Exercise12();
+	//////////				break;
+	//////////			case 13:
+	//////////				Exercise13();
+	//////////				break;
+	//////////			case 14:
+	//////////				Exercise14();
+	//////////				break;
+	//////////			case 15:
+	//////////				Exercise15();
+	//////////				break;
+	//////////			case 16:
+	//////////				Exercise16();
+	//////////				break;
+	//////////			case 17:
+	//////////				Exercise17();
+	//////////				break;
+	//////////			case 18:
+	//////////				Exercise18();
+	//////////				break;
+	//////////			case 19:
+	//////////				Exercise19();
+	//////////				break;
+	//////////			case 20:
+	//////////				Exercise20();
+	//////////				break;
+	//////////			default:
+	//////////				cout << "thay da nhap sai, moi thay nhap lai trong it phut..." << endl;
+	//////////				redo = true;
+	//////////				break;
+	//////////			}
+	//////////		}
+	//////////		// hoi thay coi co tiep tuc test cac E con lai khong
+	//////////		stop = getStop();
+	//////////	}
+	//////////}
+	//E11GraphToMatrix();
+	//E20Isomorphous();
+	Exercise17();
 	system("pause");
 	return 0;
 }
