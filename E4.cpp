@@ -13,6 +13,8 @@ void E4_problem(){
 		cin >> arr[i];
 	}
 	Heap p;
-	p = p.ArrayToHeap(arr, N);
+	for (int i = 0; i < N; i++)
+		p.InsertHeap(arr[i]);
+	cout << "Heap duoc tao thanh:\n";
 	p.PrintHeapTree();
 }
