@@ -10,12 +10,17 @@ void E13() {
 	h = h.ArrayToHeap(arr, size);
 
 	h.PrintHeapTree();			//In heap
-
+	
+	//Chuyen heap thanh ma tran lien ke
+	int **arraymatrix;
+	arraymatrix = new int*[size];
+	
 	cout << "Heap chuyen sang ma tran lien ke : " << endl;
 
 	cout << setw(5) << left << " ";
 	for (int i = 0; i <= size - 1; i++)
 	{
+		arraymatrix[i][1] = h[i];
 		cout << setw(5) << left << h[i];
 	}
 
@@ -23,6 +28,7 @@ void E13() {
 
 	for (int i = 0; i <= size - 1; i++)
 	{
+		arraymatrix[i][2] = h[1];
 		cout << setw(5) << left << h[i];
 		for (int j = 0; j <= size - 1; j++)
 		{
