@@ -9,30 +9,26 @@ void Graph::Print(){
 	cout << "Print this Graph: \n";
 
 	for (int i = 0; i < this->size; i++){
-		if (pTemp) {
-			if (pTemp){
-				cout << pTemp->data;
-				if (pTemp->firstEdge){
-					eG = pTemp->firstEdge; 
-					while (eG){
+		if (pTemp){
+			cout << pTemp->data;
+			if (pTemp->firstEdge){
+				eG = pTemp->firstEdge; 
+				while (eG){
 
-						cout << "->" << eG->destination->data;
+					cout << "->" << eG->destination->data;
 
-						if (!eG->nextEdge) {
-							cout << "->NULL \n|\n";
-							break;
-						}
-						else eG = eG->nextEdge;
-
+					if (!eG->nextEdge) {
+						cout << "->NULL \n|\n";
+						break;
 					}
+					else eG = eG->nextEdge;
+
 				}
-				else  cout << "->NULL \n|\n";
 			}
+				else  cout << "->NULL \n|\n";
 		}
-
-		pTemp = pTemp->nextVertex;
+			pTemp = pTemp->nextVertex;
 	}
-
 	cout << "NULL\n";	
 }
 void E5_problem(){
