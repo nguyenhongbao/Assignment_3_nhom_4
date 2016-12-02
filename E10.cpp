@@ -7,29 +7,29 @@ void E10() {
 
 		Heap h;
 		h = h.ArrayToHeap(arr, size);
+		h.PrintHeapTree();
 		int **edgeDataArr;
 
-		edgeDataArr = new int*[size - 1];
+		edgeDataArr = new int*[size-1];
 
 		for (int i = 0; i < size - 1; i++)
 			edgeDataArr[i] = new int[2];
 
-		for (int i = 0; i < size - 1; i++) {
-			edgeDataArr[i][0] = h[i / 2];
-			edgeDataArr[i][1] = h[i + 1];
-			edgeDataArr[0][i] = h[i / 2];
-			edgeDataArr[1][i] = h[i + 1];
+		for (int i = 0; i < size/2; i++) {
+			edgeDataArr[i][0] = h[i*2+1];
+			edgeDataArr[i][1] = h[i*2 +2];
 		}
-
 		Graph g;
 
 		for (int i = 0; i < size; i++) {
 			g.InsertVertex(h[i]);
 		}
 
-		for (int i = 0; i < size - 1; i++) {
-			g.InsertEdge(edgeDataArr[i][0], edgeDataArr[i][1]);
-			g.InsertEdge(edgeDataArr[i][1], edgeDataArr[i][0]);
+		for (int i = 0; i < size/2; i++) {
+			g.InsertEdge(h[i], edgeDataArr[i][0]);
+			g.InsertEdge(h[i], edgeDataArr[i][1]);
+			g.InsertEdge(edgeDataArr[i][0] ,h[i]);
+			g.InsertEdge(edgeDataArr[i][1],h[i]);
 		}
 
 		g.Print();
