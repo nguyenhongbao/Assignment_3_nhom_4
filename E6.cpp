@@ -1,9 +1,52 @@
 #include "Graph.h"
 using namespace std;
 
-bool Graph::RemoveEdge(Vertex* from, Vertex* to) 
-{
+
+bool Graph::RemoveEdge(Vertex* from, Edge* from_to){
+	if (!from || !from_to) return false;
+	if (!this->VertexExist(from)) return false;
+	Edge* eG = from->firstEdge, *ePre = from->firstEdge;
+	if (from->firstEdge == from_to){
+		from->firstEdge = from->firstEdge->nextEdge;
+		delete eG;
+		eG = NULL;
+		return true;
+	}
+	while (eG){
+		if (eG == from_to)
+		{
+			if (eG->nextEdge) { 
+				ePre->nextEdge = eG->nextEdge;
+			}
+			else { 
+				ePre->nextEdge = eG = NULL; 
+			}
+			delete from_to;
+			from_to = NULL;
+			return true;
+		}
+		ePre = eG;
+		if (eG->nextEdge) eG = eG->nextEdge; 
+	}
 	return false;
+
+};
+bool  Graph::RemoveEdge(Vertex* from, Vertex* to){
+	if (!from || !to) return false;
+	if (!this->VertexExist(from) || !this->VertexExist(to)) return false;
+	Edge* eG = from->firstEdge;
+	while (eG){
+		if (eG->destination == to) { 
+			return this->RemoveEdge(from, eG);
+		}
+		eG = eG->nextEdge;
+	}
+	return false;
+}
+bool Graph::RemoveEdge(int fromData, int toData){
+	//if (this->VertexExist(fromData) && this->VertexExist(toData))
+		return RemoveEdge(GetVertex(fromData), GetVertex(toData));
+	//return false;
 }
 
 bool Graph::RemoveVertex(Vertex* del) 
