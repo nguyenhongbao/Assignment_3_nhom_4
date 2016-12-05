@@ -620,7 +620,8 @@ void Exercise13() {
 void RecursionE14(Vertex*& vertexroot, LStack<int>& stack, int& countT, Vertex* vertexnow) {
 	if (vertexnow->processed == 1) {
 		// neu quay tro lai goc dau tien thi ghi nhan 1 chu trinh
-		countT++;
+		if (vertexnow == vertexroot) 
+			countT++;
 		// neu khong thi de quay tro lai buoc truoc
 	}
 	// neu di qua 1 dinh moi
