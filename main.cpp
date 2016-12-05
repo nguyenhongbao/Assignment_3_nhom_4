@@ -1,41 +1,5 @@
-#include <iostream>
-#include <iomanip>
-#include <conio.h>
-#include <vector>
-#include "source/AVLTree.h"
-#include "source/InputReader.h"
-#include "source/Graph.h"
-#include "source/Stack.h"
-#include "source/Queue.h"
-#include "source/Heap.h"
-#include <string.h>
-#include <math.h>
+#include "include.h"
 
-#define FILE2 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E2.txt"
-#define FILE3 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E3.txt"
-#define FILE5 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E5.txt"
-#define FILE6 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E6.txt"
-#define FILE7 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E7.txt"
-#define FILE8 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E8.txt"
-#define FILE9 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E9.txt"
-#define FILE10 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E10.txt"
-#define FILE11 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E11.txt"
-#define FILE12 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E12.txt"
-#define FILE13 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E13.txt"
-#define FILE14 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E14.txt"
-#define FILE15 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E15.txt"
-#define FILE16 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E16.txt"
-#define FILE17 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E17.txt"
-#define FILE18 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E18.txt"
-#define FILE19 "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E19.txt"
-#define FILE20a "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E20a.txt"
-#define FILE20b "D:\\CAU TRUC DU LIEU VA GIAI THUAT\\assignment3-1.3\\assignment3-1.3\\input\\E20b.txt"
-using namespace std;
-
-struct BoolLinked {
-	bool data;
-	BoolLinked* next;
-};
 /////////////////////////////////////////////////////////////////////////
 // E1
 void Exercise1() {
@@ -284,6 +248,7 @@ bool Graph::RemoveEdge(int fromData, int toData) {
 // 
 bool Graph::RemoveVertex(int reData) {
 	bool result = true;
+	this->size--;
 	Vertex* pTemp = this->gHead;
 	if (this->gHead) {
 		while (pTemp) {
@@ -310,8 +275,10 @@ bool Graph::RemoveVertex(int reData) {
 				pDelete->nextVertex = NULL;
 				delete pDelete;
 			}
-			else
+			else {
+				this->size++;
 				result = false;
+			}
 		}
 	}
 	return result;
@@ -461,7 +428,7 @@ void Exercise9() {
 		AVLTree myAVL;
 		myAVL = myAVL.ArrayToAVL(arr, count);
 		myAVL.PrintAVL();  // in AVL Tree
-		Graph graph = AVL2Graph(myAVL); //chuy?n  AVL Tree sang graph
+		Graph graph = AVL2Graph(myAVL); //chuyen AVL Tree sang graph
 		graph.Print(); //in graph
 	}
 
@@ -633,12 +600,12 @@ void Exercise13() {
 	// khong can biet data cua no, chi dua vao chi so
 	for (int i = 0; i < count; i++) {
 		// neu co canh ben trai thi tao lien ket cha con
-		if (2 * i < count) {
+		if (2 * i + 1 < count) {
 			matrix[i][2 * i + 1] = 1;
 			matrix[2 * i + 1][i] = 1;
 		}
 		// neu co canh ben phai thi tao lien ket cha con
-		if (2 * i + 1 < count) {
+		if (2 * i + 2 < count) {
 			matrix[i][2 * i + 2] = 1;
 			matrix[2 * i + 2][i] = 1;
 		}
@@ -651,15 +618,15 @@ void Exercise13() {
 ////////////////////////////////////////////////////////////////////////////////
 // ham nay thuoc DFS, tim den het 1 chu trinh roi in ra
 void RecursionE14(Vertex*& vertexroot, LStack<int>& stack, int& countT, Vertex* vertexnow) {
-	if (vertexnow->processed) {
+	if (vertexnow->processed == 1) {
 		// neu quay tro lai goc dau tien thi ghi nhan 1 chu trinh
 		countT++;
 		// neu khong thi de quay tro lai buoc truoc
 	}
 	// neu di qua 1 dinh moi
-	else {
+	else if (vertexnow->processed == 0) {
 		// danh dau da di qua
-		vertexnow->processed = true;
+		vertexnow->processed = 1;
 		stack.pushStack(vertexnow->data);
 		// tao vong lap cho Recursion
 		Edge* pTemp = vertexnow->firstEdge;
@@ -669,7 +636,7 @@ void RecursionE14(Vertex*& vertexroot, LStack<int>& stack, int& countT, Vertex* 
 			pTemp = pTemp->nextEdge;
 		}
 		// sua lai la chua di qua de tim them chu trinh moi
-		vertexnow->processed = false;
+		vertexnow->processed = 0;
 		stack.popStack();
 	}
 }
@@ -686,6 +653,8 @@ void Exercise14() {
 	Vertex* pTemp = graph.gHead;
 	while (pTemp) {
 		RecursionE14(pTemp, stack, countT, pTemp);
+		// danh dau de khong di qua diem nay nua
+		pTemp->processed = 2;
 		pTemp = pTemp->nextVertex;
 	}
 	cout << "Tong so chu trinh la " << countT << endl;
@@ -768,41 +737,6 @@ void Exercise16() {
 		cout << "Do thi nay khong phai la do thi lien thong manh" << endl;
 }
 ////////////////////////////////////////////////////////////////////////////////
-/* mot so luu y:
-+ ta da biet dinh co the la root
-+ ta biet rang khong co dinh nao trung key voi nhau
-Vay,cong viec can lam la:
-+ kiem tra so dinh con cua moi dinh
-+ kiem tra balance cua moi dinh
-+ kiem tra thu tu
-*/
-////void testAVL(Vertex* vnow, bool& result) {
-////	if (result) {
-////		if (!vnow->processed) {
-////			Edge* pTemp = vnow->firstEdge;
-////			int count = 0;
-////			while (pTemp) {
-////				count++;
-////				testAVL(pTemp->destination, result);
-////				if (count == 2) {
-////					// neu ma co mot dinh con thu 3
-////					if (pTemp->nextEdge) {
-////						result = false;
-////						return;
-////					}
-////					// neu cay co 2 dinh con thi khong can lam gi ca
-////				}
-////				// neu cay chi co 1 dinh con
-////				else {
-////
-////				}
-////				pTemp = pTemp->nextEdge;
-////			}
-////		}
-////		else
-////			result = false;
-////	}
-////}
 
 // ham nay tao hinh cay theo dung nhung gi ma tran mieu ta, dong thoi check coi no co phai la cay AVL hay khong
 bool InsertAVLtest(Node*& root, int newdata, int father, bool& taller) {
@@ -1277,117 +1211,119 @@ bool getStop() {
 
 
 int main() {
-	Head();
-	bool stop = false;
-	stop = getStop();
-	if (!stop) {
-		while (!stop) {
-			system("cls");
-			int n = 0;
-			bool redo = true;
-			while (redo) {
-				fflush(stdin);
-				cin.ignore(1000,'\n');
-				cout << "Moi thay nhap ma so cua bai tap nho (20 bai tap): ";
-				cin >> n;
-				if ((n > 0) && (n <= 20)) {
-					redo = false;
-					switch (n) {
-					case 1:
-						// thao tac co ban voi AVL tree (Insert)
-						Exercise1();
-						break;
-					case 2:
-						// thao tac co ban voi AVL tree (Delete)
-						Exercise2();
-						break;
-					case 3:
-						// dem so nut chan le, nguyen to co trong cay AVL
-						Exercise3();
-						break;
-					case 4:
-						// thao tac co ban voi Heap (Insert)
-						Exercise4();
-						break;
-					case 5:
-						// thao tac co ban voi Graph (in Graph)
-						Exercise5();
-						break;
-					case 6:
-						// thao tac co ban voi Graph (xoa Vertex)
-						Exercise6();
-						break;
-					case 7:
-						// tinh trong so cua cay AVL theo do cao
-						Exercise7();
-						break;
-					case 8:
-						// tinh trong so cua heap thoe do cao
-						Exercise8();
-						break;
-					case 9:
-						// chuyen cay AVL snag Graph
-						Exercise9();
-						break;
-					case 10:
-						// chuyen 1 heap sang Graph
-						Exercise10();
-						break;
-					case 11:
-						// chuyen 1 graph sang ma tran lien ke
-						Exercise11();
-						break;
-					case 12:
-						// chuyen 1 cay AVL sang ma tran lien ke
-						Exercise12();
-						break;
-					case 13:
-						// chuyen 1 heap sang ma tran lien ke
-						Exercise13();
-						break;
-					case 14:
-						// dem tong so chu trinh trong Graph
-						Exercise14();
-						break;
-					case 15:
-						// chuyen ma tran lien ke sang graph
-						Exercise15();
-						break;
-					case 16:
-						// kiem tra xem 1 graph co lien thong manh hay khong
-						Exercise16();
-						break;
-					case 17:
-						// kiem tra xem 1 ma tran lien ke co bieu dien cho 1 cay AVL hay khong
-						Exercise17();
-						break;
-					case 18:
-						// tim duong di ngan nhat cua graph
-						Exercise18();
-						break;
-					case 19:
-						// tim duong di ngan nhat cua graph khong di qua 1 so dinh
-						Exercise19();
-						break;
-					case 20:
-						// kiem tra 2 do thi dang cau
-						Exercise20();
-						break;
-					default:
-						break;
-					}
-				}
-				else {
-					cout << "thay da nhap sai, moi thay nhap lai.." << endl;
-					_flushall();
-					redo = true;
-					continue;
-				}
-			}
-			// hoi thay coi co tiep tuc test cac E con lai khong
-			stop = getStop();
-		}
-	}
+	//Head();
+	//bool stop = false;
+	//stop = getStop();
+	//if (!stop) {
+	//	while (!stop) {
+	//		system("cls");
+	//		int n = 0;
+	//		bool redo = true;
+	//		while (redo) {
+	//			fflush(stdin);
+	//			cin.ignore(1000,'\n');
+	//			cout << "Moi thay nhap ma so cua bai tap nho (20 bai tap): ";
+	//			cin >> n;
+	//			if ((n > 0) && (n <= 20)) {
+	//				redo = false;
+	//				switch (n) {
+	//				case 1:
+	//					// thao tac co ban voi AVL tree (Insert)
+	//					Exercise1();
+	//					break;
+	//				case 2:
+	//					// thao tac co ban voi AVL tree (Delete)
+	//					Exercise2();
+	//					break;
+	//				case 3:
+	//					// dem so nut chan le, nguyen to co trong cay AVL
+	//					Exercise3();
+	//					break;
+	//				case 4:
+	//					// thao tac co ban voi Heap (Insert)
+	//					Exercise4();
+	//					break;
+	//				case 5:
+	//					// thao tac co ban voi Graph (in Graph)
+	//					Exercise5();
+	//					break;
+	//				case 6:
+	//					// thao tac co ban voi Graph (xoa Vertex)
+	//					Exercise6();
+	//					break;
+	//				case 7:
+	//					// tinh trong so cua cay AVL theo do cao
+	//					Exercise7();
+	//					break;
+	//				case 8:
+	//					// tinh trong so cua heap thoe do cao
+	//					Exercise8();
+	//					break;
+	//				case 9:
+	//					// chuyen cay AVL snag Graph
+	//					Exercise9();
+	//					break;
+	//				case 10:
+	//					// chuyen 1 heap sang Graph
+	//					Exercise10();
+	//					break;
+	//				case 11:
+	//					// chuyen 1 graph sang ma tran lien ke
+	//					Exercise11();
+	//					break;
+	//				case 12:
+	//					// chuyen 1 cay AVL sang ma tran lien ke
+	//					Exercise12();
+	//					break;
+	//				case 13:
+	//					// chuyen 1 heap sang ma tran lien ke
+	//					Exercise13();
+	//					break;
+	//				case 14:
+	//					// dem tong so chu trinh trong Graph
+	//					Exercise14();
+	//					break;
+	//				case 15:
+	//					// chuyen ma tran lien ke sang graph
+	//					Exercise15();
+	//					break;
+	//				case 16:
+	//					// kiem tra xem 1 graph co lien thong manh hay khong
+	//					Exercise16();
+	//					break;
+	//				case 17:
+	//					// kiem tra xem 1 ma tran lien ke co bieu dien cho 1 cay AVL hay khong
+	//					Exercise17();
+	//					break;
+	//				case 18:
+	//					// tim duong di ngan nhat cua graph
+	//					Exercise18();
+	//					break;
+	//				case 19:
+	//					// tim duong di ngan nhat cua graph khong di qua 1 so dinh
+	//					Exercise19();
+	//					break;
+	//				case 20:
+	//					// kiem tra 2 do thi dang cau
+	//					Exercise20();
+	//					break;
+	//				default:
+	//					break;
+	//				}
+	//			}
+	//			else {
+	//				cout << "thay da nhap sai, moi thay nhap lai.." << endl;
+	//				_flushall();
+	//				redo = true;
+	//				continue;
+	//			}
+	//		}
+	//		// hoi thay coi co tiep tuc test cac E con lai khong
+	//		stop = getStop();
+	//	}
+	//}
+	Exercise14();
 	
+	system("pause");
 	return 0;
 }
