@@ -816,6 +816,8 @@ bool InsertAVLtest(Node*& root, int newdata, int father, bool& taller) {
 }
 
 void testAVL(int** matrix, int& n, Node*& root, int father, bool* processed, bool& result, LQueue<int>& queue) {
+	if (father == 7)
+		father = 7;
 	if (result) {
 		if (!processed[father - 1]) {
 			processed[father - 1] = true;
@@ -905,6 +907,10 @@ bool isMatrixaAVL(int** matrix, int n) {
 			// kiem tra cay co chua tat ca cac dinh khong
 			if (i != n)
 				result = false;
+		}
+		if (result) {
+			cout << "Cay AVL duoc bieu dien: " << endl;
+			AVLroot->PrintNode();
 		}
 	}
 	return result;
@@ -1323,7 +1329,7 @@ int main() {
 	//		stop = getStop();
 	//	}
 	//}
-	Exercise14();
+	Exercise17();
 	
 	system("pause");
 	return 0;
